@@ -1,7 +1,8 @@
 import React from "react";
 import "./Home.css";
 
-export default function Home() {
+export default function Home(props) {
+  console.log(props.isAuthenticated)
   return (
     <div className="Home">
       <div className="lander">

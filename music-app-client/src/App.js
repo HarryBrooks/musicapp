@@ -50,9 +50,6 @@ function App(props) {
             {isAuthenticated
               ? <NavItem onClick={handleLogout}>Logout</NavItem>
               : <>
-                  <LinkContainer to="/signup">
-                    <NavItem>Signup</NavItem>
-                  </LinkContainer>
                   <LinkContainer to="/login">
                     <NavItem>Login</NavItem>
                   </LinkContainer>
