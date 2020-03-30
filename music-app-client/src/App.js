@@ -1,66 +1,75 @@
-import React, { useState, useEffect } from "react";
-import { Link, withRouter } from "react-router-dom";
-import { Nav, Navbar, NavItem } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
-import Routes from "./Routes";
-import "./App.css";
-import { Auth } from "aws-amplify";
+import React, { Component } from 'react';
+import './App.css';
+import OAuthButton from './OAuthButton';
+import Amplify, { Auth, Hub } from 'aws-amplify';
+import awsconfig from './config'; // your Amplify configuration
 
-function App(props) {
-  const [isAuthenticated, userHasAuthenticated] = useState(false);
-  const [isAuthenticating, setIsAuthenticating] = useState(true);
+// your Cognito Hosted UI configuration
+const oauth = {
+  domain: "music-app.auth.eu-west-1.amazoncognito.com",
+  scope: ['email', 'profile', 'openid'],
+  redirectSignIn: "http://localhost:3000/",
+  redirectSignOut: "http://localhost:3000/",
+  responseType: "code"
+};
 
-  async function handleLogout() {
-    await Auth.signOut();
-  
-    userHasAuthenticated(false);
-    props.history.push("/login");
+Amplify.configure(awsconfig);
+Auth.configure({oauth});
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.signOut = this.signOut.bind(this);
+    // let the Hub module listen on Auth events
+    Hub.listen('auth', (data) => {
+        switch (data.payload.event) {
+            case 'signIn':
+                this.setState({authState: 'signedIn', authData: data.payload.data});
+                break;
+            case 'signIn_failure':
+                this.setState({authState: 'signIn', authData: null, authError: data.payload.data});
+                break;
+            default:
+                break;
+        }
+    });
+    this.state = {
+      authState: 'loading',
+      authData: null,
+      authError: null
+    }
   }
 
-  useEffect(() => {
-    onLoad();
-  }, []);
-  
-  async function onLoad() {
-    try {
-      await Auth.currentSession();
-      userHasAuthenticated(true);
-    }
-    catch(e) {
-      if (e !== 'No current user') {
-        alert(e);
-      }
-    }
-  
-    setIsAuthenticating(false);
+  componentDidMount() {
+    console.log('on component mount');
+    // check the current user when the App component is loaded
+    Auth.currentAuthenticatedUser().then(user => {
+      console.log(user);
+      this.setState({authState: 'signedIn'});
+    }).catch(e => {
+      console.log(e);
+      this.setState({authState: 'signIn'});
+    });
   }
 
-  return (
-    !isAuthenticating &&
-    <div className="App container">
-      <Navbar fluid collapseOnSelect>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Link to="/">Scratch</Link>
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-          <Nav pullRight>
-            {isAuthenticated
-              ? <NavItem onClick={handleLogout}>Logout</NavItem>
-              : <>
-                  <LinkContainer to="/login">
-                    <NavItem>Login</NavItem>
-                  </LinkContainer>
-                </>
-            }
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-      <Routes appProps={{ isAuthenticated, userHasAuthenticated }} />
-    </div>
-  );
+  signOut() {
+    Auth.signOut().then(() => {
+      this.setState({authState: 'signIn'});
+    }).catch(e => {
+      console.log(e);
+    });
+  }
+
+  render() {
+    const { authState } = this.state;
+    return (
+      <div className="App">
+        {authState === 'loading' && (<div>loading...</div>)}
+        {authState === 'signIn' && <OAuthButton/>}
+        {authState === 'signedIn' && <button onClick={this.signOut}>Sign out</button>}
+      </div>
+    );
+  }
 }
 
-export default withRouter(App);
+export default App;
