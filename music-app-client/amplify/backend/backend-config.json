@@ -1,0 +1,10 @@
+{
+	"auth": {
+		"musicappclient51bd5631": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [],
+			"customAuth": false
+		}
+	}
+}
