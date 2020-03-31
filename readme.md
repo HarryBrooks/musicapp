@@ -1,6 +1,6 @@
 ## Music App Project
 
-(c) 2020 Harry Brooks, Alex Craig
+(c) 2020 Harry Brooks, Alex C
 
 ## CLIENT READ ME
 
