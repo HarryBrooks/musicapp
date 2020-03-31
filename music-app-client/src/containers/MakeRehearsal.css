@@ -1,0 +1,15 @@
+@media all and (min-width: 480px) {
+    .makeRehearsal {
+      padding: 60px 0;
+      padding-top: 0;
+    }
+  
+    .makeRehearsal form {
+      margin-left: 0 auto;
+      max-width: 320px;
+    }
+
+    .makeRehearsal .submitButton {
+        margin-top: 50px;
+    }
+  }
