@@ -1,0 +1,7 @@
+{
+    "requestContext": {
+      "identity": {
+        "cognitoIdentityId": "eu-west-1:asdkj"
+      }
+    }
+  }

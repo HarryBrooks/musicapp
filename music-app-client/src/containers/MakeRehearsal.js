@@ -50,7 +50,8 @@ const MakeRehearsal = () => {
         API.post("create", "", {
             body: data
         }).then(response => {
-            setSessionCode(response.session_code)
+            console.log(response)
+            setSessionCode(response)
         }).catch(error => {
             console.log(error.response.data.message)
         })
