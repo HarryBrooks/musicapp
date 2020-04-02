@@ -16,16 +16,15 @@ export default function Home() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Called");
     API.post("musicianRehearsal", "", {
       body: {
         sessionId: fields.session_id,
         password: fields.password
       }
     }).then(response => {
-        console.log(response)
+        console.log(response[0])
+        setRehearsal(response[0]);
         setRedirect(true);
-        setRehearsal(response);
     }).catch(error => {
         console.log(error.response.data.message)
     })
@@ -37,8 +36,11 @@ export default function Home() {
   }
 
   if(redirect) {
-    return <Redirect 
-      to='/makeVideo' />
+    console.log(rehearsal)
+    return <Redirect to={{
+      pathname: '/makeVideo',
+      state: { rehearsal }
+    }}/>
   }
 
   return (
