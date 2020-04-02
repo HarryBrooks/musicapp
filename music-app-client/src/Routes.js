@@ -7,6 +7,7 @@ import AppliedRoute from "./components/AppliedRoute";
 import Signup from "./containers/Signup";
 import MakeRehearsal from "./containers/MakeRehearsal";
 import ShowRehearsals from "./containers/ShowRehearsals";
+import MakeVideo from "./containers/MakeVideo";
 
 export default function Routes({ appProps }) {
   return (
@@ -16,6 +17,7 @@ export default function Routes({ appProps }) {
       <AppliedRoute path="/signup" exact component={Signup} appProps={appProps} />
       <AppliedRoute path="/rehearsal" exact component={MakeRehearsal} />
       <AppliedRoute path="/showRehearsals" exact component={ShowRehearsals} />
+      <AppliedRoute path="/makeVideo" exact component={MakeVideo} appProps={appProps} />
       { /* Finally, catch all unmatched routes */ }
       <Route component={NotFound} />
     </Switch>
