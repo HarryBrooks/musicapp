@@ -10,7 +10,8 @@ const MakeRehearsal = () => {
         number_bars: 100,
         tempo: 100,
         instruments: 1,
-        passcode: ""
+        passcode: "",
+        time_sig: "4/4"
     });
     const [rehearsalMarkings, setRehearsalMarkings] = useState([])
     const [sessionCode, setSessionCode] = useState(0)
