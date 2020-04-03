@@ -65,6 +65,30 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
+  deleteRehearsal:
+    handler: delete.main  
+    events:
+      - http:
+          path: deleteRehearsal/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  combine:
+    handler: combine.main  
+    events:
+      - http:
+          path: combine/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  musicianRehearsal:
+    handler: musicianRehearsal.main
+    events:
+      - http:
+          path: musicianRehearsal
+          method: post
+          cors: true
+          authorizer: aws_iam
 
 resources:
   Resources:
