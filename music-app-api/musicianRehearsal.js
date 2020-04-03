@@ -5,19 +5,19 @@ export async function main(event, context, callback) {
   const body = JSON.parse(event.body);
   const params = {
     TableName: process.env.tableName,
-    FilterExpression: "session_code = :sessionId",
+    FilterExpression: "session_code = :sessionId and passcode = :password",
     ExpressionAttributeValues: {
-      ":sessionId": parseInt(body.sessionId)
-    }
+      ":sessionId": parseInt(body.sessionId),
+      ":password": body.password
+    },
+    ProjectionExpression: 'rehearsalId, number_bars, tempo, time_sig'
   };
 
   try {
     const result = await dynamoDbLib.call("scan", params);
+    console.log(result);
     if (result.Items) {
-      // Return the retrieved item
-      if(result.Items[0].passcode === body.password) {
-        return success(result.Items);
-      }
+      return success(result.Items);
     }
     return failure({ status: false, error: "Item not found." });
   } catch (e) {

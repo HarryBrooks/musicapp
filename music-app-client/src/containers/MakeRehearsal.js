@@ -45,6 +45,7 @@ const MakeRehearsal = () => {
             number_bars: fields.number_bars,
             tempo: fields.tempo,
             passcode: fields.passcode,
+            time_sig: fields.time_sig,
             rehearsalMarkings
         }
         console.log(data)

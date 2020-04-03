@@ -3,13 +3,14 @@ import MediaCapturer from 'react-multimedia-capture';
 import { Button } from 'react-bootstrap';
 
 class MakeVideo extends Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 		this.state = {
 			granted: false,
 			rejectedReason: '',
 			recording: false,
-            paused: false
+            paused: false,
+            rehearsal: props.location.state.rehearsal
 		};
 
 		this.handleRequest = this.handleRequest.bind(this);
@@ -24,6 +25,10 @@ class MakeVideo extends Component {
 		this.releaseStreamFromVideo = this.releaseStreamFromVideo.bind(this);
 		this.downloadVideo = this.downloadVideo.bind(this);
 	}
+    componentDidMount() {
+        console.log(this.state.rehearsal)
+    }
+
 	handleRequest() {
 		console.log('Request Recording...');
 	}
