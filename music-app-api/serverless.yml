@@ -15,3 +15,74 @@ provider:
   runtime: nodejs10.x
   stage: prod
   region: eu-west-1
+  # To load environment variables externally
+  # rename env.example to .env and uncomment
+  # the following line. Also, make sure to not
+  # commit your .env.
+  #
+  #environment:
+  #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
+
+  # These environment variables are made available to our functions
+  # under process.env.
+  environment:
+    tableName: music-app-rehearsals
+
+  # 'iamRoleStatements' defines the permission policy for the Lambda function.
+  # In this case Lambda functions are granted with permissions to access DynamoDB.
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:eu-west-1:*:*"
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+  create:
+    handler: create.main
+    events:
+      - http:
+          path: create
+          method: post
+          cors: true
+          authorizer: aws_iam
+  userRehearsals:
+    handler: userRehearsals.main  
+    events:
+      - http:
+          path: userRehearsals
+          method: get
+          cors: true
+          authorizer: aws_iam
+
+resources:
+  Resources:
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+    GatewayResponseDefault5XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_5XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
